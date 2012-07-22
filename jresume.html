@@ -1,0 +1,583 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>resume</title>
+<script language="javascript">
+  
+  // In HTML the returned value of the tagName property is always in UPPERCASE
+  DISPLAY = {
+    TR: 'table-row',
+    TD: 'table-cell',
+    TABLE: 'table',
+  }
+
+  TO_OBSCURE = [];
+  
+  
+  function display(element) {
+    
+    var display = DISPLAY[element.tagName];
+    element.style.opacity=0.0 
+    element.style.display = display != null ? display : 'block';
+    
+    if ( TO_OBSCURE.length == 0 ){
+      TO_OBSCURE.push(element);
+      obscure();
+    } else  {
+      TO_OBSCURE.push(element);
+    }
+  
+  }
+  
+  function obscure() {
+    
+    var element = TO_OBSCURE[0];
+    
+    var timeOut = setInterval( function(){ 
+      var opacity = parseFloat(element.style.opacity); 
+      element.style.opacity =  opacity + 0.0333; 
+    }, 100);
+    
+    setTimeout( function(){ 
+      clearInterval(timeOut);
+      
+      TO_OBSCURE.shift();
+      if ( TO_OBSCURE.length > 0 ){
+	obscure();
+      }
+      
+    }, 3101);
+    
+  }
+  
+  function scroll(element){
+  
+    var offsetTop = element.offsetTop;
+    var offsetBottom = offsetTop + element.offsetWidth;
+    
+    window.scrollTo(element.offsetLeft,element.offsetTop);
+  }  
+
+</script>
+
+<script language="javascript">
+
+  function ModernCV(elementId){
+    
+    var elementId= elementId;
+    
+    this.show = function(resume){
+      
+      var mainElement = getMainElement();
+      mainElement.style.display = 'block';
+      
+      setName(resume.name);
+      
+      for ( var i = 0; i < resume.educations.length; i++) {
+	addEducation(resume.educations[i]);
+      }
+
+      for ( var i = 0; i < resume.employments.length; i++) {
+	addEmployment(resume.employments[i]);
+      }
+
+      for ( var i = 0; i < resume.languages.length; i++) {
+	addLanguage(resume.languages[i]);
+      }
+      
+      for ( var i = 0; i < resume.programmings.length; i++) {
+	addProgramming(resume.programmings[i]);
+      }
+
+      for ( var i = 0; i < resume.others.length; i++) {
+	addOther(resume.others[i]);
+      }
+
+      setAddress(resume.address);
+      setEmail(resume.email);
+      setTelephone(resume.telephone);
+    }
+    
+    this.play = function(resume, step){
+      
+      mainElement = getMainElement();
+      mainElement.style.display = 'block';
+      
+      /**/
+      setTimeout(function() {
+	setName(resume.name);
+	setTimeout(function(){
+	  for ( education in resume.educations ) {
+	    addEducation(education);
+	  }
+	}, step);
+      }, step );
+      
+    }
+
+    function setName(name){
+      nameElement = getChildElement('name');
+      nameElement.innerHTML = name;
+    }
+
+    function setEmail(email){
+      emailElement = getChildElement('email');
+      emailElement.innerHTML = email;
+    }
+
+    function setAddress(address){
+      addressElement = getChildElement('address');
+      addressElement.innerHTML = address;
+    }
+
+    function setTelephone(telephone){
+      telephoneElement = getChildElement('telephone');
+      telephoneElement.innerHTML = telephone;
+    }
+
+    function addEducation(education){
+      
+      var educationsElement = getChildElement('educations');
+      var educationElement = getChildElement('education');
+
+      // Here  treat education JSON object like an associative array.
+      // Yes it's not clear enough but it's very simple and flexible,
+      for ( var property in education ) {
+	var propertyElement = getChildElement('education.' + property);
+	if ( propertyElement != null ) {
+	  propertyElement.innerHTML = education[property];
+	}
+      }
+      
+      // Deep true for copy childs as well
+      var newEducationElement = educationElement.cloneNode(true);
+      display(newEducationElement);
+      educationsElement.appendChild(newEducationElement);
+    
+    }
+
+    function addOther(other){
+      
+      var othersElement = getChildElement('others');
+      var otherElement = getChildElement('other');
+
+      // Here  treat other JSON object like an associative array.
+      for ( var property in other ) {
+	var propertyElement = getChildElement('other.' + property);
+	if ( propertyElement != null ) {
+	  propertyElement.innerHTML = other[property];
+	}
+      }
+      
+      // Deep true for copy childs as well
+      var newOtherElement = otherElement.cloneNode(true);
+      newOtherElement.style.display = 'block';
+      othersElement.appendChild(newOtherElement);
+    
+    }
+
+    function addProgramming(programming){
+      
+      var programmingsElement = getChildElement('programmings');
+      var programmingElement = getChildElement('programming');
+
+      // Here  treat programming JSON object like an associative array.
+      for ( var property in programming ) {
+	var propertyElement = getChildElement('programming.' + property);
+	if ( propertyElement != null ) {
+	  propertyElement.innerHTML = programming[property];
+	}
+      }
+      
+      // Deep true for copy childs as well
+      var newProgrammingElement = programmingElement.cloneNode(true);
+      newProgrammingElement.style.display = 'block';
+      programmingsElement.appendChild(newProgrammingElement);
+    
+    }
+
+    function addLanguage(language){
+      
+      var languagesElement = getChildElement('languages');
+      var languageElement = getChildElement('language');
+
+      // Here  treat language JSON object like an associative array.
+      for ( var property in language ) {
+	var propertyElement = getChildElement('language.' + property);
+	if ( propertyElement != null ) {
+	  propertyElement.innerHTML = language[property];
+	}
+      }
+      
+      // Deep true for copy childs as well
+      var newLanguageElement = languageElement.cloneNode(true);
+      newLanguageElement.style.display = 'block';
+      languagesElement.appendChild(newLanguageElement);
+    
+    }
+
+    function addEmployment(employment){
+      
+      var employmentsElement = getChildElement('employments');
+      var employmentElement = getChildElement('employment');
+
+      // Here  treat employment JSON object like an associative array.
+      for ( var property in employment ) {
+	var propertyElement = getChildElement('employment.' + property);
+	if ( propertyElement != null ) {
+	  propertyElement.innerHTML = employment[property];
+	}
+      }
+
+      // Deep true for copy childs as well
+      var newEmploymentElement = employmentElement.cloneNode(true);
+      employment
+      // Now add projects... gets it's element sets it's props ...
+      for ( var i = 0; i < employment.projects.length; i++ ) {
+	var project = employment.projects[i];
+	var projectElement = getChildElement('employment.project');
+	for ( var property in project ) {
+	  var propertyElement = getChildElement('employment.project.' + property);
+	  if ( propertyElement != null ) {
+	    propertyElement.innerHTML = project[property];
+	  }
+	}
+	var newProjectElement = projectElement.cloneNode(true);
+	newProjectElement.style.display = 'block';
+	newEmploymentElement.appendChild(newProjectElement);
+      }
+      
+      //newEmploymentElement.style.display = 'block';
+      display(newEmploymentElement);
+      employmentsElement.appendChild(newEmploymentElement);
+    }
+
+    function getMainElement(){
+      return document.getElementById(elementId);
+    }
+    
+    function getChildElement(name){
+      return document.getElementById(elementId +'.'+name);
+    }
+    
+    
+  }
+  
+</script>
+
+<script language="javascript">
+  
+    RESUME = {
+      name: 'Ra&uacute;l Trepiana',
+      email: 'rtrepiana@gmail.com',
+      telephone: '34 675704960',
+      address: 'Avda/ Juan Carlos I, 7, 5&ordm; A &ndash; 01002 Vitoria, Spain',
+      educations: [ 
+	{ start: '1999', 
+	  end: '2000', 
+	  school: '<a  href="http://www.ingenieria.deusto.es/">University of Deusto</a>' , 
+	  region: 'Bilbao, Spain' , 
+	  degree: 'Master&rsquo;s degree in Software Engineering'  
+	}, 
+	{ start: '1999', 
+	  end: '1993', 
+	  school: '<a  href="http://www.ingenieria.deusto.es/">University of Deusto</a>' , 
+	  region: 'Bilbao, Spain' , 
+	  degree: 'BSc in Computer Engineering'  
+	}, 
+      ],
+      employments: [
+	{ start: '2009', 
+	  end: '<span style="color:#ffffff;">0000</span>', 
+	  employer: '<a  href="http://www.esferalia.com">ESFERALIA Networks</a>' , 
+	  region: 'Vitoria, Spain' , 
+	  title: '<b>Software Egineer &amp; Sysadmin GNU/Linux</b>' ,
+	  projects : [
+	    { description: 'Design and develop of application <a  href="http://es3.stinville.es/es3/">ES3</a> ( Peru Goverment ). SaaS to streaming video captured by surveillance aircrafts and synchronizing it with aircrafts path during fly (GWT).<br>I use this project to promote use of GWT instead of JSF. Really like sysadmin I don\'t want session at servers, without it we will do a cluster much more easy and reliable, similar to static webs.'},
+	    { description: 'Design and develop of application <a  href="http://www.aonsolutions.es">aon Payroll</a>. SaaS to calculate payroll (GWT, JSF). I proposed GWT here.' },
+	    { description: 'Develop an Apache module to translate subdirectories into subdomains. To avoid the need for multi-domain SSL certificate.' },
+	    { description: 'Admin of production and development SaaS platform <a href="http://www.aonsolutions.es">aon</a> (CentOS):' +
+	      '<ol style="list-style-type:circle;" >'+
+	      '<li>Installing DNS server cluster (Bind ).</li>'+
+	      '<li>Installing Mail platform (Ldap, Postfix, CyrusImap, SpamAssasin )</li>'+
+	      '<li>Installing WEB server cluster (Apache &amp; <a  href="http://code.google.com/p/lsyncd/">Lsyncd</a> ).</li>'+
+	      '<li>Installing virtualized application server cluster (JBoss, XEN).</li>'+
+	      '<li>Installing MySQL &lsquo;cluster&rsquo; (MySQL, <a  href="http://mysql-mmm.org/">MySQLMultiMaster</a> &lsquo;not real cluster&rsquo; ).</li>'+
+	      '<li >Managing the development and testing platform :</li>'+
+	      '<ol style="list-style:square;"><li>Subversion.</li><li>Jenkins (fantastic continuous integration server).</li><li>Selenium (only if automated you test).</li></ol>'+
+	      '</ol>'},
+	  ]
+	}, 
+	{ start: '2004', 
+	  end: '2009', 
+	  employer: '<a  href="http://www.pandasecurity.com">Panda Security</a>' , 
+	  region: 'Bilbao, Spain' , 
+	  title: '<b>Software Egineer C/C++ GNU/Linux</b>'  ,
+	  projects : [
+	   { description: 'Member of development team of <a  href="http://www.pandasecurity.com/usa/enterprise/solutions/cloud-email-protection/">Truslayer</a>. SaaS email protection (Debian)'},
+	   { description: 'Managing the development and testing platform :'+
+	      '<ol style="list-style-type:circle;"><li>Subversion.</li><li>Buildbot (continuous integration system).</li><li>Trac</li><li>JMeter</li></ol>'}
+	  ],
+	},
+	{ start: '1999', 
+	  end: '2004', 
+	  employer: 'Consulting &amp; Development' , 
+	  region: 'Vitoria, Spain' , 
+	  title: '<b>Software Egineer Java/C</b>'  ,
+	  projects : [
+	   { description: 'Member of development team of <a  href="http://www.base100.com/productos/caravel01.html">Caravel</a>. An automatic conversion tool of RPG and Cobol applications to Java (J2EE).'},
+	   { description: 'Design and implementation of the IDE <a  href="http://download.cnet.com/CosmoWeb/3000-2212_4-10134404.html">CosmoWeb</a> (for Java ,JSPs) for the company Transtools SA. I promoted the change from desktop applications to the web (J2EE). Even implemented a custom tag library.'}
+	  ],
+	},
+	{ start: '1998', 
+	  end: '1999', 
+	  employer: 'Consulting &amp; Development' , 
+	  region: 'Vitoria, Spain' , 
+	  title: '<b>Scholar</b>'  ,
+	  projects : [
+	    { description: 'Implementation of fee collection program of the Court of Paraguay <a  href="http://www.base100.com/productos/cosmos01.html">Cosmos</a>'},
+	    { description: 'Member of development team of the management program, Enterprise XXI.'},
+	  ],
+	},
+      ],
+      languages: [
+	{ name : 'English',
+	  level: 'Medium',
+	  description :'Perfect understanding of written language, almost no practice in speaking'
+	}
+      ],
+      programmings: [
+	{ level: 'Expert',
+	  description :'C, C++ (still scares me), Java'
+	},
+	{ level: 'High',
+	  description :'Bash, Python, Javascript', 
+	},
+	{ level: 'Medium',
+	  description :'Perl, PHP, Haskell'
+	},
+      ],
+      others: [
+	{ level: 'Expert',
+	  description :'GNU/Linux (Debian, CenTOS), PostgreSQL, MySQL'
+	},
+	{ level: 'High',
+	  description :'Apache, Postfix, CyrusImap', 
+	},
+      ],
+    };
+    
+</script>
+
+<script language="javascript">
+  
+  STEP = 1000;
+  
+  MODERNCV = new ModernCV('moderncv');
+  OLDSTYLECV = new ModernCV('oldstylecv');
+  THEMES=[ MODERNCV, OLDSTYLECV ];
+  
+  
+  function main() {
+    MODERNCV.show(RESUME, STEP);
+  }
+  
+   
+</script>
+
+
+</head>
+
+<body onload="javascript:main()">
+  <div id="moderncv" style="display:none;" >
+    <style type="text/css">
+
+    .all{max-width:468pt;padding:72pt;font-family:"Arial";}
+    .name{color:#999999;font-size:24pt;}
+    .head{color:#3c78d8;font-size:12pt;}
+    .line{text-decoration:line-through}
+    .right{text-align:right}
+    .text{font-size:10pt;}
+    .spacing{height:11pt;}
+    .footer{text-align:center;color:#999999;font-style:italic}
+    .bold{font-weight:bold}
+    .item{margin-left:76pt}
+    .comment{color:#999999;font-style:italic}
+    
+    p{margin:0;}
+    span{padding:0;}
+    a{color:#1155cc;text-decoration:underline}
+
+    </style>
+    <div class="all">
+      <!-- aspirant full name -->
+      <p class=" right" ><span id="moderncv.name" class="name"></span></p>
+      <hr>
+      <p class="spacing"/>
+      <p class="spacing"/>
+      
+      <!-- EDUCATION -->
+      <p>
+	<span class="head line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+	<span class="head">&nbsp;&nbsp;&nbsp;Education</span>
+      </p>
+      <p class="spacing"/>
+      <div id="moderncv.educations" >
+	<div id="moderncv.education" class="text" style="display:none;" >
+	  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id="moderncv.education.start">1900</span>-<span id="moderncv.education.end" ></span>&nbsp;&nbsp;<span id="moderncv.education.degree" ></span>,&nbsp;<span id="moderncv.education.school"></span>,&nbsp;
+	  <span  id="moderncv.education.region" ></span>.<p class="spacing"/></div>
+      </div>
+      
+      <p class="spacing"/>
+      
+      <!-- EMPLOYMENTS -->
+      <p ><span class="head line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="head">&nbsp;&nbsp;&nbsp;&nbsp;Professional Experience</span></p>
+      <p class="spacing"/>
+
+      <div id="moderncv.employments" >
+	<div class="text" id="moderncv.employment" style="display:none;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id="moderncv.employment.start" ></span>-<span id="moderncv.employment.end"></span>&nbsp;&nbsp;<span id="moderncv.employment.title" ></span><span>,&nbsp;</span><span id="moderncv.employment.employer"></span><span>,&nbsp;</span><span id="moderncv.employment.region" ></span>.
+	<p class="spacing"/>
+	
+	<div id="moderncv.employment.project" style="display:none;" >
+	  <p class="item" id="moderncv.employment.project.description" ></p>	
+	  <p class="spacing"/>
+	</div>
+	
+	</div>
+      </div>
+      
+      <!-- LANGUAGES -->
+      <p ><span class="head line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="head">&nbsp;&nbsp;&nbsp;&nbsp;Languages</span></p>
+      <p class="spacing"/>
+      <div id="moderncv.languages">
+	<div class="text" id="moderncv.language" style="display:none;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="bold" id="moderncv.language.name"></span>&nbsp;&nbsp;<span  id="moderncv.language.level" ></span>&nbsp;<span id="moderncv.language.description" class="comment" ></span><p class="spacing"/></div>
+      </div>
+      
+
+      <!-- PROGRAMMING LANGUAGES -->
+      <p ><span class="head line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="head">&nbsp;&nbsp;&nbsp;&nbsp;Programming Languages</span></p>
+      <p class="spacing"/>
+      <div id="moderncv.programmings">
+	<p id="moderncv.programming" class="text" style="display:none;"><span id="moderncv.programming.level" style="text-align:right;width:92px;display:inline-block;"></span>&nbsp;&nbsp;<span id="moderncv.programming.description" ></span></p>
+      </div>
+      <p class="spacing"/>
+      
+      <!-- OTHERS  -->
+      <p ><span class="head line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="head">&nbsp; &nbsp; Operating Systems, Servers</span></p>
+      <p class="spacing"/>
+      
+      <div id="moderncv.others">
+	<p id="moderncv.other" class="text" style="display:none;"><span id="moderncv.other.level" style="text-align:right;width:92px;display:inline-block;"></span>&nbsp;&nbsp;<span id="moderncv.other.description" ></span></p>
+      </div>
+      
+      <p class="spacing"/>
+      <p class="spacing"/>
+      <p class="spacing"/>
+      <p class="spacing"/>
+      
+      <!-- CONTACT DATA -->
+      <p class="footer"><span class="text" id="moderncv.address"></span></p>
+      <p class="footer"><span class="text" id="moderncv.telephone" ></span> &bull; &nbsp;<span class="text"  id="moderncv.email" ></span></p>
+      
+      <p class="text"></p>
+    </div>
+  </div>
+  <div id="oldstylecv" style="display:none;" >
+    <style type="text/css">
+
+    .all{max-width:468pt;padding:72pt;font-family:"Arial";}
+    .name{color:#000000;font-size:24pt;}
+    .head{color:#999999;font-size:12pt;}
+    .line{text-decoration:line-through}
+    .right{text-align:right}
+    .text{font-size:10pt;}
+    .spacing{height:11pt;}
+    .footer{text-align:center;color:#999999;font-style:italic}
+    .bold{font-weight:bold}
+    .item{margin-left:76pt}
+    .comment{color:#999999;font-style:italic}
+    
+    p{margin:0;}
+    span{padding:0;}
+    a{color:#1155cc;text-decoration:underline}
+
+    </style>
+    <div class="all">
+      <!-- aspirant full name -->
+      <p><span id="oldstylecv.name" class="name"></span></p>
+      <p class="spacing"/>
+      <p class="spacing"/>
+      
+      <table id="oldstylecv.educations"  >      
+	<tr>
+	  <td>
+	    <!-- EDUCATION -->
+	    <span class="head">Education</span>
+	  </td>
+	</tr>
+	<tr id="oldstylecv.education" style="display1:none;" >
+	  <td>
+	      <div class="text" >
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id="oldstylecv.education.start">1900</span>-<span id="oldstylecv.education.end" ></span>&nbsp;&nbsp;<span id="oldstylecv.education.degree" ></span>,&nbsp;<span id="oldstylecv.education.school"></span>,&nbsp;
+		<span  id="oldstylecv.education.region" ></span>.<p class="spacing"/></div>
+	  </td>
+	</tr>
+      </table>
+      
+      <p class="spacing"/>
+      
+      <!-- EMPLOYMENTS -->
+      <p ><span class="head">Professional Experience</span></p>
+      <p class="spacing"/>
+
+      <div id="oldstylecv.employments" >
+	<div class="text" id="oldstylecv.employment" style="display:none;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id="oldstylecv.employment.start" ></span>-<span id="oldstylecv.employment.end"></span>&nbsp;&nbsp;<span id="oldstylecv.employment.title" ></span><span>,&nbsp;</span><span id="oldstylecv.employment.employer"></span><span>,&nbsp;</span><span id="oldstylecv.employment.region" ></span>.
+	<p class="spacing"/>
+	
+	<div id="oldstylecv.employment.project" style="display:none;" >
+	  <p class="item" id="oldstylecv.employment.project.description" ></p>	
+	  <p class="spacing"/>
+	</div>
+	
+	</div>
+      </div>
+      
+      <!-- LANGUAGES -->
+      <p ><span class="head">Languages</span></p>
+      <p class="spacing"/>
+      <div id="oldstylecv.languages">
+	<div class="text" id="oldstylecv.language" style="display:none;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="bold" id="oldstylecv.language.name"></span>&nbsp;&nbsp;<span  id="oldstylecv.language.level" ></span>&nbsp;<span id="oldstylecv.language.description" class="comment" ></span><p class="spacing"/></div>
+      </div>
+      
+
+      <!-- PROGRAMMING LANGUAGES -->
+      <p ><span class="head">Programming Languages</span></p>
+      <p class="spacing"/>
+      <div id="oldstylecv.programmings">
+	<p id="oldstylecv.programming" class="text" style="display:none;"><span id="oldstylecv.programming.level" style="text-align:right;width:92px;display:inline-block;"></span>&nbsp;&nbsp;<span id="oldstylecv.programming.description" ></span></p>
+      </div>
+      <p class="spacing"/>
+      
+      <!-- OTHERS  -->
+      <p ><span class="head">Operating Systems, Servers</span></p>
+      <p class="spacing"/>
+      
+      <div id="oldstylecv.others">
+	<p id="oldstylecv.other" class="text" style="display:none;"><span id="oldstylecv.other.level" style="text-align:right;width:92px;display:inline-block;"></span>&nbsp;&nbsp;<span id="oldstylecv.other.description" ></span></p>
+      </div>
+      
+      <p class="spacing"/>
+      <p class="spacing"/>
+      <p class="spacing"/>
+      <p class="spacing"/>
+      
+      <!-- CONTACT DATA -->
+      <p class="footer"><span class="text" id="oldstylecv.address"></span></p>
+      <p class="footer"><span class="text" id="oldstylecv.telephone" ></span> &bull; &nbsp;<span class="text"  id="oldstylecv.email" ></span></p>
+      
+      <p class="text"></p>
+    </div>
+  </div>
+</body>
+</html>
