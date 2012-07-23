@@ -13,6 +13,7 @@
   }
 
   TO_OBSCURE = [];
+
   
   
   function display(element) {
@@ -33,31 +34,46 @@
   function obscure() {
     
     var element = TO_OBSCURE[0];
-    
+    scroll(element);
     var timeOut = setInterval( function(){ 
       var opacity = parseFloat(element.style.opacity); 
-      element.style.opacity =  opacity + 0.0333; 
+      element.style.opacity =  opacity + 0.05; 
     }, 100);
     
     setTimeout( function(){ 
       clearInterval(timeOut);
-      
+
+      // ensure it's totally opaque.
+      element.style.opacity = 1.0; 
+
       TO_OBSCURE.shift();
       if ( TO_OBSCURE.length > 0 ){
 	obscure();
       }
       
-    }, 3101);
+    }, 2000);
     
   }
   
+  SCROLL_OFFSET = 200;
+
   function scroll(element){
   
     var offsetTop = element.offsetTop;
-    var offsetBottom = offsetTop + element.offsetWidth;
-    
-    window.scrollTo(element.offsetLeft,element.offsetTop);
+    var offsetBottom = offsetTop + element.offsetHeight;
+
+    var scrollBottom = window.pageYOffset + window.innerHeight ;
+
+    if ( scrollBottom < ( offsetBottom + SCROLL_OFFSET ) ) {
+      var scroll = offsetBottom-scrollBottom + SCROLL_OFFSET;
+        
+      var timeout = setInterval(function(){window.scrollBy(0,scroll/10)}, 100 );
+      setTimeout(function(){clearInterval(timeout); }, 1000 );
+    }
+
   }  
+
+
 
 </script>
 
@@ -95,8 +111,8 @@
       }
 
       setAddress(resume.address);
-      setEmail(resume.email);
       setTelephone(resume.telephone);
+      setEmail(resume.email);
     }
     
     this.play = function(resume, step){
@@ -118,21 +134,25 @@
 
     function setName(name){
       nameElement = getChildElement('name');
+      display(nameElement);
       nameElement.innerHTML = name;
     }
 
     function setEmail(email){
       emailElement = getChildElement('email');
+      display(emailElement);
       emailElement.innerHTML = email;
     }
 
     function setAddress(address){
       addressElement = getChildElement('address');
+      display(addressElement);
       addressElement.innerHTML = address;
     }
 
     function setTelephone(telephone){
       telephoneElement = getChildElement('telephone');
+      display(telephoneElement);
       telephoneElement.innerHTML = telephone;
     }
 
@@ -173,6 +193,7 @@
       // Deep true for copy childs as well
       var newOtherElement = otherElement.cloneNode(true);
       newOtherElement.style.display = 'block';
+      display(newOtherElement);
       othersElement.appendChild(newOtherElement);
     
     }
@@ -192,7 +213,7 @@
       
       // Deep true for copy childs as well
       var newProgrammingElement = programmingElement.cloneNode(true);
-      newProgrammingElement.style.display = 'block';
+      display(newProgrammingElement);
       programmingsElement.appendChild(newProgrammingElement);
     
     }
@@ -212,7 +233,7 @@
       
       // Deep true for copy childs as well
       var newLanguageElement = languageElement.cloneNode(true);
-      newLanguageElement.style.display = 'block';
+      display(newLanguageElement);
       languagesElement.appendChild(newLanguageElement);
     
     }
@@ -380,109 +401,129 @@
   
   
   function main() {
-    MODERNCV.show(RESUME, STEP);
+    //MODERNCV.show(RESUME, STEP);
   }
   
    
 </script>
 
-
+<style>
+  body {
+    margin: 0px;
+  }
+  #toolbar {
+    background: none repeat scroll 0 0 #F5F5F5;
+    border-bottom: 1px solid #E5E5E5;
+    border-top: 1px solid #E5E5E5;
+    min-height: 35px;
+    padding: 0 44px;
+    position: relative;
+  }
+</style>
 </head>
 
 <body onload="javascript:main()">
+  <div id="header" style="height:50px;"  >
+  </div>
+
+  <div id="bars" >
+    <div id="toolbar" >
+    </div>
+  </div>
+  
   <div id="moderncv" style="display:none;" >
     <style type="text/css">
 
-    .all{max-width:468pt;padding:72pt;font-family:"Arial";}
-    .name{color:#999999;font-size:24pt;}
-    .head{color:#3c78d8;font-size:12pt;}
-    .line{text-decoration:line-through}
-    .right{text-align:right}
-    .text{font-size:10pt;}
-    .spacing{height:11pt;}
-    .footer{text-align:center;color:#999999;font-style:italic}
-    .bold{font-weight:bold}
-    .item{margin-left:76pt}
-    .comment{color:#999999;font-style:italic}
+    .moderncv-all{max-width:468pt;padding:72pt;font-family:"Arial";}
+    .moderncv-name{color:#999999;font-size:24pt;}
+    .moderncv-head{color:#3c78d8;font-size:12pt;}
+    .moderncv-line{text-decoration:line-through}
+    .moderncv-right{text-align:right}
+    .moderncv-text{font-size:10pt;}
+    .moderncv-spacing{height:11pt;}
+    .moderncv-footer{text-align:center;color:#999999;font-style:italic}
+    .moderncv-bold{font-weight:bold}
+    .moderncv-item{margin-left:76pt}
+    .moderncv-comment{color:#999999;font-style:italic}
     
     p{margin:0;}
     span{padding:0;}
     a{color:#1155cc;text-decoration:underline}
 
     </style>
-    <div class="all">
+    <div class="moderncv-all">
       <!-- aspirant full name -->
-      <p class=" right" ><span id="moderncv.name" class="name"></span></p>
+      <p class="moderncv-right" ><span id="moderncv.name" class="moderncv-name" style="display:none;" ></span></p>
       <hr>
-      <p class="spacing"/>
-      <p class="spacing"/>
+      <p class="moderncv-spacing"/>
+      <p class="moderncv-spacing"/>
       
       <!-- EDUCATION -->
-      <p>
-	<span class="head line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-	<span class="head">&nbsp;&nbsp;&nbsp;Education</span>
+      <p class="moderncv-head" >
+	<span class="moderncv-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+	<span >&nbsp;&nbsp;&nbsp;Education</span>
       </p>
-      <p class="spacing"/>
+      <p class="moderncv-spacing"/>
       <div id="moderncv.educations" >
-	<div id="moderncv.education" class="text" style="display:none;" >
+	<div id="moderncv.education" class="moderncv-text" style="display:none;" >
 	  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id="moderncv.education.start">1900</span>-<span id="moderncv.education.end" ></span>&nbsp;&nbsp;<span id="moderncv.education.degree" ></span>,&nbsp;<span id="moderncv.education.school"></span>,&nbsp;
-	  <span  id="moderncv.education.region" ></span>.<p class="spacing"/></div>
+	  <span  id="moderncv.education.region" ></span>.<p class="moderncv-spacing"/></div>
       </div>
       
-      <p class="spacing"/>
+      <p class="moderncv-spacing"/>
       
       <!-- EMPLOYMENTS -->
-      <p ><span class="head line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="head">&nbsp;&nbsp;&nbsp;&nbsp;Professional Experience</span></p>
-      <p class="spacing"/>
+      <p class="moderncv-head" ><span class="moderncv- line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span >&nbsp;&nbsp;&nbsp;&nbsp;Professional Experience</span></p>
+      <p class="moderncv-spacing"/>
 
       <div id="moderncv.employments" >
-	<div class="text" id="moderncv.employment" style="display:none;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id="moderncv.employment.start" ></span>-<span id="moderncv.employment.end"></span>&nbsp;&nbsp;<span id="moderncv.employment.title" ></span><span>,&nbsp;</span><span id="moderncv.employment.employer"></span><span>,&nbsp;</span><span id="moderncv.employment.region" ></span>.
-	<p class="spacing"/>
+	<div class="moderncv-text" id="moderncv.employment" style="display:none;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id="moderncv.employment.start" ></span>-<span id="moderncv.employment.end"></span>&nbsp;&nbsp;<span id="moderncv.employment.title" ></span><span>,&nbsp;</span><span id="moderncv.employment.employer"></span><span>,&nbsp;</span><span id="moderncv.employment.region" ></span>.
+	<p class="moderncv-spacing"/>
 	
 	<div id="moderncv.employment.project" style="display:none;" >
-	  <p class="item" id="moderncv.employment.project.description" ></p>	
-	  <p class="spacing"/>
+	  <p class="moderncv-item" id="moderncv.employment.project.description" ></p>	
+	  <p class="moderncv-spacing"/>
 	</div>
 	
 	</div>
       </div>
       
       <!-- LANGUAGES -->
-      <p ><span class="head line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="head">&nbsp;&nbsp;&nbsp;&nbsp;Languages</span></p>
-      <p class="spacing"/>
+      <p class="moderncv-head" ><span class="moderncv- line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span >&nbsp;&nbsp;&nbsp;&nbsp;Languages</span></p>
+      <p class="moderncv-spacing"/>
       <div id="moderncv.languages">
-	<div class="text" id="moderncv.language" style="display:none;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="bold" id="moderncv.language.name"></span>&nbsp;&nbsp;<span  id="moderncv.language.level" ></span>&nbsp;<span id="moderncv.language.description" class="comment" ></span><p class="spacing"/></div>
+	<div class="moderncv-text" id="moderncv.language" style="display:none;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="moderncv-bold" id="moderncv.language.name"></span>&nbsp;&nbsp;<span  id="moderncv.language.level" ></span>&nbsp;<span id="moderncv.language.description" class="moderncv-comment" ></span><p class="moderncv-spacing"/></div>
       </div>
       
 
       <!-- PROGRAMMING LANGUAGES -->
-      <p ><span class="head line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="head">&nbsp;&nbsp;&nbsp;&nbsp;Programming Languages</span></p>
-      <p class="spacing"/>
+      <p class="moderncv-head"><span class="moderncv- line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span >&nbsp;&nbsp;&nbsp;&nbsp;Programming Languages</span></p>
+      <p class="moderncv-spacing"/>
       <div id="moderncv.programmings">
-	<p id="moderncv.programming" class="text" style="display:none;"><span id="moderncv.programming.level" style="text-align:right;width:92px;display:inline-block;"></span>&nbsp;&nbsp;<span id="moderncv.programming.description" ></span></p>
+	<p id="moderncv.programming" class="moderncv-text" style="display:none;"><span id="moderncv.programming.level" style="text-align:right;width:92px;display:inline-block;"></span>&nbsp;&nbsp;<span id="moderncv.programming.description" ></span></p>
       </div>
-      <p class="spacing"/>
+      <p class="moderncv-spacing"/>
       
       <!-- OTHERS  -->
-      <p ><span class="head line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="head">&nbsp; &nbsp; Operating Systems, Servers</span></p>
-      <p class="spacing"/>
+      <p class="moderncv-head"><span class="moderncv- line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span >&nbsp; &nbsp; Operating Systems, Servers</span></p>
+      <p class="moderncv-spacing"/>
       
       <div id="moderncv.others">
-	<p id="moderncv.other" class="text" style="display:none;"><span id="moderncv.other.level" style="text-align:right;width:92px;display:inline-block;"></span>&nbsp;&nbsp;<span id="moderncv.other.description" ></span></p>
+	<p id="moderncv.other" class="moderncv-text" style="display:none;"><span id="moderncv.other.level" style="text-align:right;width:92px;display:inline-block;"></span>&nbsp;&nbsp;<span id="moderncv.other.description" ></span></p>
       </div>
       
-      <p class="spacing"/>
-      <p class="spacing"/>
-      <p class="spacing"/>
-      <p class="spacing"/>
+      <p class="moderncv-spacing"/>
+      <p class="moderncv-spacing"/>
+      <p class="moderncv-spacing"/>
+      <p class="moderncv-spacing"/>
       
       <!-- CONTACT DATA -->
-      <p class="footer"><span class="text" id="moderncv.address"></span></p>
-      <p class="footer"><span class="text" id="moderncv.telephone" ></span> &bull; &nbsp;<span class="text"  id="moderncv.email" ></span></p>
-      
-      <p class="text"></p>
+      <p class="moderncv-footer"><span class="moderncv-text" id="moderncv.address"></span></p><p class="moderncv-footer"><span class="moderncv-text" id="moderncv.telephone" ></span>&bull;&nbsp;<span class="moderncv-text"  id="moderncv.email" ></span></p>      
+      <p class="moderncv-text"></p>
     </div>
   </div>
+
+
   <div id="oldstylecv" style="display:none;" >
     <style type="text/css">
 
